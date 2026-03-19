@@ -1,0 +1,42 @@
+IVS Project 2 - Team Plan
+=========================
+
+1. TEAM MEMBERS & ROLES
+
+| Login     | Role        | Responsibility                              |
+|-----------|-------------|---------------------------------------------|
+| xkadlep01 | Team Leader | Unit tests, profiling, team communication   |
+| xkovalj00 | Developer   | Math library, Makefile, installer/uninstall |
+| xferenj00 | Developer   | GUI (interface + keyboard controls)         |
+
+2. COMMUNICATION
+
+- Primary channel: Discord
+- Secondary channel: Email/Phone
+- Project management: Trello
+- Rules:
+  - Notify team at least 48 hours in advance if unable to meet a deadline
+  - All major decisions discussed in team chat before committing to code
+
+3. VERSION CONTROL
+
+- System: Git
+- Hosting: GitHub -- https://github.com/jakubkoval06/IVSProjekt
+- Access: access granted to ivs account
+
+4. DEADLINES & TASK ASSIGNMENTS
+
+| Subject                 | Responsible | Deadline        |
+|-------------------------|-------------|-----------------|
+| Project plan            | All         | March 19, 2026  |
+| Makefile                | xkovalj00   | April 1, 2026   |
+| Tests for math library  | xkadlep01   | April 5, 2026   |
+| Math library            | xkovalj00   | April 8, 2026   |
+| GUI interface           | xferenj00   | April 14, 2026  |
+| Profiling               | xkadlep01   | April 14, 2026  |
+| GUI keyboard controls   | xferenj00   | April 16, 2026  |
+| Installer / uninstaller | xkovalj00   | April 22, 2026  |
+| Doxygen documentation   | All         | TBD             |
+| GUI mockup              | All         | TBD             |
+| User manual (PDF)       | All         | TBD             |
+| Debugging screenshot    | All         | TBD             |
