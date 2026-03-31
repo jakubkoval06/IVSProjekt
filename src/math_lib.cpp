@@ -1,5 +1,5 @@
 #include "math_lib.h"
-#include <cmath>
+//#include <cmath>
 double add(double a, double b)      {
 	return a+b;
 }
@@ -34,8 +34,19 @@ double power(double base, int exp)  {
 	return power(base, exp-1)*base;
 }
 
-double root(double base, int n)     {
-	return pow(base, 1.0/n);
+//double root(double base, int n)     {
+//	return pow(base, 1.0/n);
+//}
+
+//Newton method root
+double root(double base, int n) {
+	double x = base / n;
+	double prev;
+	while (x - prev > 1e-9 || prev - x > 1e-9) {
+        	prev = x;
+        	x = ((n - 1) * x + base / power(x, n - 1)) / n;
+    	}
+    	return x;
 }
 
 double sum(double *val, int len)    {
