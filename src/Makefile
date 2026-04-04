@@ -26,7 +26,7 @@ $(BUILD_DIR)/stddev: $(STDDEV_OBJS)
 
 $(BUILD_DIR)/tests: $(TEST_OBJS)
 	mkdir -p $(BUILD_DIR)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $^ -o $@ -lgtest -lpthread
 
 test: $(BUILD_DIR)/tests
 	./$(BUILD_DIR)/tests
