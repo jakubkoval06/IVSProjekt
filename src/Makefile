@@ -4,7 +4,7 @@ CXXFLAGS = -std=c++17 -Wall -Wextra -g
 BUILD_DIR = ../build
 SRC_DIR = .
 
-CALC_SRCS   = $(filter-out stddev.cpp tests.cpp, $(wildcard *.cpp))
+CALC_SRCS   = $(filter-out math_lib_tests.cpp, $(wildcard *.cpp))
 STDDEV_SRCS = stddev.cpp math_lib.cpp
 TEST_SRCS   = math_lib_tests.cpp math_lib.cpp
 
