@@ -12,28 +12,25 @@ int main() {
 
     double x;
 
-    std::vector<double> values;
+    // Read all numbers from stdin
+    std::vector<double> numbers;
     while(std::cin >> x) {
-        values.push_back(x);
+        numbers.push_back(x);
     }
 
-    int len = values.size();
-    double VectorSum = sum(values.data(), len);
+    int len = numbers.size();
 
-    double SumSq = 0.0;
-    for(double v : values) {
-        SumSq = add(SumSq, power(v,2));
+    // Compute sum of all values and sum of squares
+    double total = sum(numbers.data(), len);
+    double sumOfSquares = 0.0;
+    for(double v : numbers) {
+        sumOfSquares = add(sumOfSquares, power(v, 2));
     }
 
-    double mean = divide(VectorSum, len);
+    // Standard deviation formula: sqrt((Σx² - n·x̄²) / (n-1))
+    double mean = divide(total, len);
+    double variance = divide(subtract(sumOfSquares, multiply(power(mean, 2), len)), subtract(len, 1));
+    double stdDev = root(variance, 2);
 
-    double mean_sq = power(mean,2);
-    double n_times_mean_sq = multiply(mean_sq, len);
-
-    double brackets = subtract(SumSq, n_times_mean_sq);
-    double divided = divide(brackets, subtract(len,1));
-
-    double std_dev = root(divided, 2);
-
-    std::cout << std_dev;
+    std::cout << stdDev;
 }
