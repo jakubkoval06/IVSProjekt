@@ -4,10 +4,21 @@
 //  date:       2026
 //  ==============================
 
+/**
+ * @file stddev.cpp
+ * @brief Profiling program for the IVS calculator. Reads numbers from stdin and computes the sample standard deviation. 
+ * @author Patrik Kadleček / xkadlep01
+ * @date 2026
+ */
+
 #include "math_lib.h"
 #include <iostream>
 #include <vector>
 
+/**
+ * @brief Reads numbers from stdin and calculates sqrt((SUM(x^2) - n * mean^2) / (n-1)).
+ * @return 0 on success
+ */
 int main() {
 
     double x;
