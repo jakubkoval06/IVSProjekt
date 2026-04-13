@@ -14,6 +14,8 @@ TEST_OBJS   = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(TEST_SRCS))
 
 .PHONY: all stddev test clean
 
+stddev: $(BUILD_DIR)/stddev
+
 all: $(BUILD_DIR)/calculator $(BUILD_DIR)/stddev
 
 $(BUILD_DIR)/calculator: $(CALC_OBJS)
