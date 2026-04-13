@@ -17,7 +17,7 @@
 
 /**
  * @brief Reads numbers from stdin and calculates sqrt((SUM(x^2) - n * mean^2) / (n-1)).
- * @return 0 on success
+ * @return 0 on success, 1 if fewer than 2 values were provided
  */
 int main() {
 
@@ -29,7 +29,12 @@ int main() {
         numbers.push_back(x);
     }
 
-    int len = numbers.size();
+    int len = (int)numbers.size();
+
+    if (len < 2) {
+        std::cerr << "Error: at least 2 values required\n";
+        return 1;
+    }
 
     // Compute sum of all values and sum of squares
     double total = sum(numbers.data(), len);
