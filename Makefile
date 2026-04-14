@@ -1,7 +1,7 @@
 SRC_DIR = src
 BUILD_DIR = build
 
-.PHONY: all pack clean test doc run stddev help
+.PHONY: all pack clean test doc run stddev help quote
 
 all:
 	$(MAKE) -C $(SRC_DIR)
@@ -9,7 +9,7 @@ all:
 stddev:
 	$(MAKE) -C $(SRC_DIR) stddev
 
-run: all
+run: quote all
 	./$(BUILD_DIR)/calculator
 
 test:
@@ -28,12 +28,13 @@ clean:
 	$(MAKE) -C $(SRC_DIR) clean
 	rm -rf $(BUILD_DIR) *.zip
 
-quote:
+quote: 
 	@echo "===================================="
 	@echo "     BEAR TOGETHER STROOOOOOONK!    "
 	@echo "     BEAR TOGETHER SMAAAAAAAART!    "
 	@echo "   -- Bear_Together_Stronk (2026)   "
 	@echo "===================================="
+
 help:
 	@echo " Requirements: g++, make, doxygen"
 	@echo " "
