@@ -18,6 +18,9 @@ test:
 doc:
 	doxygen $(SRC_DIR)/Doxyfile
 
+parser: 
+	$(MAKE) -C $(SRC_DIR) parser
+
 pack: clean
 	zip -r xlogin01_xlogin02_xlogin03_xlogin04.zip \
 		src/ mockup/ plan/ profiling/ manual.pdf \
