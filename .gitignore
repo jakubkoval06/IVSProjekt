@@ -1,2 +1,9 @@
 build/
 docs/
+
+*.o
+*.obj
+moc_*.cpp
+*.moc
+Makefile
+calc
