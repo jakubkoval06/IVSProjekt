@@ -1,4 +1,5 @@
 #include "math_lib.h"
+#include "parser.h"
 #include <iostream>
 #include <string>
 #include <stdexcept>
@@ -152,22 +153,8 @@ double parsePrimary() {
 }
 
 
-int main() {
-    std::string line;
-
-    while (std::getline(std::cin, line)) {
-        if (line.empty()) continue;
-
-        input = line;
-        pos   = 0;
-
-        try {
-            double result = parseExpr();
-            std::cout << result << "\n";
-        } catch (std::exception& e) {
-            std::cerr << "Error: " << e.what() << "\n";
-        }
-    }
-
-    return 0;
+double evaluate(const std::string &expr) {
+    input = expr;
+    pos   = 0;
+    return parseExpr();
 }
