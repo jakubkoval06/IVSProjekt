@@ -14,7 +14,7 @@ QT_LIBS   = $(shell pkg-config --libs   Qt6Widgets)
 CALC_SRCS   = $(filter-out math_lib_tests.cpp stddev.cpp, $(wildcard *.cpp))
 STDDEV_SRCS = stddev.cpp math_lib.cpp
 TEST_SRCS   = math_lib_tests.cpp math_lib.cpp
-PARSER_SRCS = parser.cpp math_lib.cpp
+PARSER_SRCS = parser.cpp math_lib.cpp parser_main.cpp
 
 CALC_OBJS   = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(CALC_SRCS))
 STDDEV_OBJS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(STDDEV_SRCS))
