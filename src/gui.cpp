@@ -66,6 +66,44 @@ private:
         return btn;
     }
 
+    /**
+     * @brief Maps press events to their intended function.
+     * Digits, operators and parentheses append to the end of the string.
+     * Enter calculates, backspace deletes last character, escape clears.
+     */
+    void keyPressEvent(QKeyEvent *event) override {
+        QString key = event->text();
+
+        if (!key.isEmpty() && (key[0].isDigit() || QString("+-*/.^()").contains(key[0]))) {
+            appendToDisplay(key);
+            return;
+        }
+
+        switch (event->key()) {
+            case Qt::Key_Return:
+            case Qt::Key_Enter:
+                try {
+                    QString expr = display->text();
+                    expr.replace("²√(", "sqrt(");
+                    expr.replace("n!(", "fact(");
+                    expr.replace("√(", "root(");
+                    display->setText(QString::number(evaluate(expr.toStdString())));
+                } catch (std::exception &e) {
+                    display->setText("Error");
+                }
+                break;
+            case Qt::Key_Backspace:
+                if (!display->text().isEmpty())
+                    display->setText(display->text().chopped(1));
+                break;
+            case Qt::Key_Escape:
+                display->clear();
+                break;
+            default:
+                QMainWindow::keyPressEvent(event);
+        }
+    }
+
     /** @brief Creates and places the read-only text in the result window.  */
     void buildDisplay() {
         display = new QLineEdit(this);
