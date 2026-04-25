@@ -1,6 +1,6 @@
 # IVS Calculator {#mainpage}
 
-A team C++ project for VUT FIT, about the development of a simple calculator application and the teamwork behind it.
+A team C++ project for VUT FIT, focused on the development of a simple calculator application and the teamwork behind it.
 
 ---
 
