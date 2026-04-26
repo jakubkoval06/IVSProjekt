@@ -146,7 +146,7 @@ private:
             case Qt::Key_Return:
             case Qt::Key_Enter:
                 try {
-                    display->setText(QString::number(evaluate(prepareExpression(display->text()).toStdString())));
+                    display->setText(QString::number(evaluate(prepareExpression(autoCloseParens(display->text())).toStdString())));
                 } catch (std::exception &e) {
                     display->setText(QString::fromStdString(e.what()));
                     hasError = true;
@@ -231,6 +231,23 @@ private:
         }
 
         return result;
+    }
+
+    /** @brief Appends missing closing parentheses to the expression. */
+    QString autoCloseParens(const QString &expression) {
+        int openParenCount = 0;
+        for (QChar character : expression) {
+            if (character == '(') {
+                openParenCount++;
+            } else if (character == ')') {
+                openParenCount--;
+            }
+        }
+        QString balanced = expression;
+        for (int missing = 0; missing < openParenCount; ++missing) {
+            balanced += ')';
+        }
+        return balanced;
     }
 
     /** @brief Adds a symbol to the end of the display. Clears first if the last result was an error. */
@@ -361,7 +378,7 @@ private:
         button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         connect(button, &QPushButton::clicked, this, [this]() {
             try {
-                double result = evaluate(prepareExpression(display->text()).toStdString());
+                double result = evaluate(prepareExpression(autoCloseParens(display->text())).toStdString());
                 display->setText(QString::number(result));
                 hasError = false;
             } catch (std::exception &e) {
