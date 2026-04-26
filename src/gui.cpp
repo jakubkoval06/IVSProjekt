@@ -18,6 +18,7 @@
 #include <QPushButton>
 #include <QKeyEvent>
 #include <QMessageBox>
+#include <QRegularExpression>
 #include "parser.h"
 
 /**
@@ -168,6 +169,7 @@ private:
     void buildDisplay() {
         display = new QLineEdit(this);
         display->setReadOnly(true);
+        display->setFocusPolicy(Qt::NoFocus);
         display->setAlignment(Qt::AlignRight);
         display->setMinimumHeight(40);
         layout->addWidget(display, 0, 0, 1, 5);
@@ -185,8 +187,8 @@ private:
                 "\n"
                 "FUNCTIONS\n"
                 "  ²√(x)         square root       (e.g. ²√(9))\n"
-                "  √(x,n)        nth root of x     (e.g. √(8,3))\n"
-                "  n!(x)         factorial         (e.g. n!(5))\n"
+                "  n√(x)         nth root of x     (e.g. 3√(27) = cube root of 27)\n"
+                "  fact(x)        factorial         (e.g. fact(5))\n"
                 "\n"
                 "KEYBOARD\n"
                 "  Enter         calculate\n"
@@ -201,7 +203,33 @@ private:
     QString prepareExpression(const QString &expression) {
         QString result = expression;
         result.replace("²√(", "sqrt(");
-        result.replace("√(", "root(");
+
+        // Convert n√(expr) -> root(expr,n)  e.g. 3√(27) -> root(27,3)
+        // doing backend work imo
+        QRegularExpression nthRootRegex(R"((\d+(?:\.\d+)?)√\()");
+        int searchOffset = 0;
+        while (true) {
+            QRegularExpressionMatch match = nthRootRegex.match(result, searchOffset);
+            if (!match.hasMatch()) break;
+
+            int matchStart   = match.capturedStart();
+            int openParenPos = match.capturedEnd() - 1;
+            QString rootDegree = match.captured(1);
+
+            int parenDepth    = 1;
+            int scanPos       = openParenPos + 1;
+            while (scanPos < result.size() && parenDepth > 0) {
+                if (result[scanPos] == '(') parenDepth++;
+                else if (result[scanPos] == ')') parenDepth--;
+                scanPos++;
+            }
+
+            QString innerExpr   = result.mid(openParenPos + 1, scanPos - openParenPos - 2);
+            QString replacement = "root(" + innerExpr + "," + rootDegree + ")";
+            result.replace(matchStart, scanPos - matchStart, replacement);
+            searchOffset = matchStart + replacement.size();
+        }
+
         return result;
     }
 

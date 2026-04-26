@@ -9,7 +9,7 @@ all:
 stddev:
 	$(MAKE) -C $(SRC_DIR) stddev
 
-run: quote all
+run: all
 	./$(BUILD_DIR)/calculator
 
 test:
