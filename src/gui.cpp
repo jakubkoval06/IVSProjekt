@@ -17,6 +17,7 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QKeyEvent>
+#include <QMessageBox>
 #include "parser.h"
 
 /**
@@ -32,28 +33,88 @@ public:
     CalculatorWindow() : QMainWindow(nullptr) {
         setWindowTitle("Calculator");
         //set the window title and fixed size to not loose sanity later
-        setFixedSize(380, 580);
+        setFixedSize(460, 500);
 
         QWidget *central = new QWidget(this);
         setCentralWidget(central);
+
+        // Visual styling - csslike
+        central->setStyleSheet(R"(
+            QWidget {
+                background-color: #f5f5f7;
+                font-family: "Segoe UI", "Helvetica Neue", sans-serif;
+                font-size: 16px;
+            }
+            QLineEdit {
+                background-color: #ffffff;
+                border: none;
+                border-radius: 8px;
+                padding: 8px 14px;
+                font-size: 22px;
+                color: #000000;
+            }
+            QPushButton {
+                background-color: #ffffff;
+                border: 1px solid #e0e0e4;
+                border-radius: 8px;
+                color: #000000;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #ececf0;
+            }
+            QPushButton:pressed {
+                background-color: #dcdce0;
+            }
+            QPushButton#op {
+                background-color: #ececf0;
+                font-weight: none;
+            }
+            QPushButton#op:hover  { background-color: #dcdce0; }
+            QPushButton#op:pressed { background-color: #c8c8cc; }
+            QPushButton#clear {
+                color: #FF0000;
+                font-weight: none;
+            }
+            QPushButton#primary {
+                background-color: #ffffff;
+                color: #000000;
+                font-size: 18px;
+                font-weight: none;
+                border: 1px solid #e0e0e4;
+            }
+            QPushButton#primary:hover  { background-color: #2c2c2e; }
+            QPushButton#primary:pressed { background-color: #000000; }
+            QPushButton#help {
+                background-color: #654848;
+                color: #ffffff;
+                font-weight: none;
+            }
+            QPushButton#help:hover { background-color: #1a1a1a; }
+        )");
 
         //qgrid layout
         layout = new QGridLayout(central);
         layout->setSpacing(6);
         layout->setContentsMargins(12, 12, 12, 12);
 
+        // Equal column widths so calculate doesn't eat half the window
+        for (int col = 0; col < 5; ++col) layout->setColumnStretch(col, 1);
+
         buildDisplay();
+        buildFunctionRow();
+        buildParenthesesAndClearRow();
         buildDigitButtons();
         buildOperatorButtons();
         buildBottomRow();
-        buildParenthesesAndPowerRow();
-        buildFunctionRow();
         buildCalculateButton();
+        buildHelpButton();
     }
 
 private:
     QLineEdit *display;
     QGridLayout *layout;
+    bool hasError = false;
 
     /**
      * @brief Creates a button with minimum height to avoid redundancy.
@@ -63,6 +124,7 @@ private:
     QPushButton *makeButton(const QString &text) {
         QPushButton *btn = new QPushButton(text, this);
         btn->setMinimumHeight(50);
+        btn->setFocusPolicy(Qt::NoFocus);
         return btn;
     }
 
@@ -83,13 +145,10 @@ private:
             case Qt::Key_Return:
             case Qt::Key_Enter:
                 try {
-                    QString expr = display->text();
-                    expr.replace("²√(", "sqrt(");
-                    expr.replace("n!(", "fact(");
-                    expr.replace("√(", "root(");
-                    display->setText(QString::number(evaluate(expr.toStdString())));
+                    display->setText(QString::number(evaluate(prepareExpression(display->text()).toStdString())));
                 } catch (std::exception &e) {
-                    display->setText("Error");
+                    display->setText(QString::fromStdString(e.what()));
+                    hasError = true;
                 }
                 break;
             case Qt::Key_Backspace:
@@ -97,6 +156,7 @@ private:
                     display->setText(display->text().chopped(1));
                 break;
             case Qt::Key_Escape:
+            case Qt::Key_C:
                 display->clear();
                 break;
             default:
@@ -104,58 +164,106 @@ private:
         }
     }
 
-    /** @brief Creates and places the read-only text in the result window.  */
+    /** @brief Creates and places the read-only text in the result window. */
     void buildDisplay() {
         display = new QLineEdit(this);
         display->setReadOnly(true);
         display->setAlignment(Qt::AlignRight);
-        display->setPlaceholderText("Results");
         display->setMinimumHeight(40);
-        layout->addWidget(display, 0, 0, 1, 4);
+        layout->addWidget(display, 0, 0, 1, 5);
     }
 
-    /** @brief Adds a symbol to the end of the display when a button is clicked. */
+    /** @brief Places the help button in the slot next to the decimal point. */
+    void buildHelpButton() {
+        QPushButton *helpBtn = makeButton("?");
+        helpBtn->setObjectName("help");
+        connect(helpBtn, &QPushButton::clicked, this, [this]() {
+            QMessageBox::information(this, "Help",
+                "OPERATIONS\n"
+                "  +  -  *  /     basic arithmetic\n"
+                "  ^              power  (e.g. 2^8)\n"
+                "\n"
+                "FUNCTIONS\n"
+                "  ²√(x)         square root       (e.g. ²√(9))\n"
+                "  √(x,n)        nth root of x     (e.g. √(8,3))\n"
+                "  n!(x)         factorial         (e.g. n!(5))\n"
+                "\n"
+                "KEYBOARD\n"
+                "  Enter         calculate\n"
+                "  Backspace     delete last character\n"
+                "  Escape        clear"
+            );
+        });
+        layout->addWidget(helpBtn, 6, 3);
+    }
+
+    /** @brief Converts display notation to parser syntax before evaluation. */
+    QString prepareExpression(const QString &expression) {
+        QString result = expression;
+        result.replace("²√(", "sqrt(");
+        result.replace("√(", "root(");
+        return result;
+    }
+
+    /** @brief Adds a symbol to the end of the display. Clears first if the last result was an error. */
     void appendToDisplay(const QString &text) {
+        if (hasError) { display->clear(); hasError = false; }
         display->setText(display->text() + text);
     }
 
-    /** @brief Places sqrt, fact and root buttons in top row. */
+    /**
+     * @brief Places square root, factorial, root, power and backspace in row 1.
+     */
     void buildFunctionRow() {
         QPushButton *squareRoot  = makeButton("²√");
+        squareRoot->setObjectName("op");
         QPushButton *factorial   = makeButton("n!");
+        factorial->setObjectName("op");
         QPushButton *generalRoot = makeButton("√");
+        generalRoot->setObjectName("op");
+        QPushButton *power       = makeButton("^");
+        power->setObjectName("op");
+        QPushButton *backspace   = makeButton("⌫");
 
         connect(squareRoot,  &QPushButton::clicked, this, [this]() { appendToDisplay("²√("); });
-        connect(factorial,   &QPushButton::clicked, this, [this]() { appendToDisplay("n!("); });
+        connect(factorial,   &QPushButton::clicked, this, [this]() { appendToDisplay("fact("); });
         connect(generalRoot, &QPushButton::clicked, this, [this]() { appendToDisplay("√("); });
-
-        layout->addWidget(squareRoot,  1, 0);
-        layout->addWidget(factorial,   1, 1);
-        layout->addWidget(generalRoot, 1, 2, 1, 2);
-    }
-
-    /** @brief Places parenthesis, power and backspace buttons in row 2. */
-    void buildParenthesesAndPowerRow() {
-        QPushButton *openParen  = makeButton("(");
-        QPushButton *closeParen = makeButton(")");
-        QPushButton *power      = makeButton("^");
-        QPushButton *backspace  = makeButton("⌫");
-
-        connect(openParen,  &QPushButton::clicked, this, [this]() { appendToDisplay("("); });
-        connect(closeParen, &QPushButton::clicked, this, [this]() { appendToDisplay(")"); });
-        connect(power,      &QPushButton::clicked, this, [this]() { appendToDisplay("^"); });
-        connect(backspace,  &QPushButton::clicked, this, [this]() {
+        connect(power,       &QPushButton::clicked, this, [this]() { appendToDisplay("^"); });
+        connect(backspace,   &QPushButton::clicked, this, [this]() {
             QString text = display->text();
             if (!text.isEmpty()) display->setText(text.chopped(1));
         });
 
-        layout->addWidget(openParen,  2, 0);
-        layout->addWidget(closeParen, 2, 1);
-        layout->addWidget(power,      2, 2);
-        layout->addWidget(backspace,  2, 3);
+        layout->addWidget(squareRoot,  1, 0);
+        layout->addWidget(factorial,   1, 1);
+        layout->addWidget(generalRoot, 1, 2);
+        layout->addWidget(power,       1, 3);
+        layout->addWidget(backspace,   1, 4);
     }
 
-    /** @brief Places digit buttons 7-9, 4-6, 1-3 in rows 3-5. */
+    /**
+     * @brief Places opening parenthesis, closing parenthesis, clear and divide in row 2.
+     */
+    void buildParenthesesAndClearRow() {
+        QPushButton *openParen  = makeButton("(");
+        QPushButton *closeParen = makeButton(")");
+        QPushButton *clear      = makeButton("C");
+        clear->setObjectName("clear");
+        QPushButton *divide     = makeButton("/");
+        divide->setObjectName("op");
+
+        connect(openParen,  &QPushButton::clicked, this, [this]() { appendToDisplay("("); });
+        connect(closeParen, &QPushButton::clicked, this, [this]() { appendToDisplay(")"); });
+        connect(clear,      &QPushButton::clicked, this, [this]() { display->clear(); });
+        connect(divide,     &QPushButton::clicked, this, [this]() { appendToDisplay("/"); });
+
+        layout->addWidget(openParen,  2, 0);
+        layout->addWidget(closeParen, 2, 1);
+        layout->addWidget(clear,      2, 2);
+        layout->addWidget(divide,     2, 3);
+    }
+
+    /** @brief Places digit buttons. */
     void buildDigitButtons() {
         QPushButton *btn7 = makeButton("7");
         QPushButton *btn8 = makeButton("8");
@@ -188,55 +296,52 @@ private:
         layout->addWidget(btn3, 5, 2);
     }
 
-    /** @brief Places operator buttons /, *, -, + in column 3. */
+    /** @brief Places operator buttons *, -, + in column 3, rows 3-5. */
     void buildOperatorButtons() {
-        QPushButton *divide   = makeButton("/");
         QPushButton *multiply = makeButton("*");
+        multiply->setObjectName("op");
         QPushButton *minus    = makeButton("-");
+        minus->setObjectName("op");
         QPushButton *plus     = makeButton("+");
+        plus->setObjectName("op");
 
-        connect(divide,   &QPushButton::clicked, this, [this]() { appendToDisplay("/"); });
         connect(multiply, &QPushButton::clicked, this, [this]() { appendToDisplay("*"); });
         connect(minus,    &QPushButton::clicked, this, [this]() { appendToDisplay("-"); });
         connect(plus,     &QPushButton::clicked, this, [this]() { appendToDisplay("+"); });
 
-        layout->addWidget(divide,   3, 3);
-        layout->addWidget(multiply, 4, 3);
-        layout->addWidget(minus,    5, 3);
-        layout->addWidget(plus,     6, 3);
+        layout->addWidget(multiply, 3, 3);
+        layout->addWidget(minus,    4, 3);
+        layout->addWidget(plus,     5, 3);
     }
 
-    /** @brief Places 0, decimal point and clear in the bottom row. */
+    /** @brief Places 0 and decimal point in the bottom row. */
     void buildBottomRow() {
-        QPushButton *zero  = makeButton("0");
-        QPushButton *dot   = makeButton(".");
-        QPushButton *clear = makeButton("C");
+        QPushButton *zero = makeButton("0");
+        QPushButton *dot  = makeButton(".");
 
-        connect(zero,  &QPushButton::clicked, this, [this]() { appendToDisplay("0"); });
-        connect(dot,   &QPushButton::clicked, this, [this]() { appendToDisplay("."); });
-        connect(clear, &QPushButton::clicked, this, [this]() { display->clear(); });
+        connect(zero, &QPushButton::clicked, this, [this]() { appendToDisplay("0"); });
+        connect(dot,  &QPushButton::clicked, this, [this]() { appendToDisplay("."); });
 
-        layout->addWidget(zero,  6, 0);
-        layout->addWidget(dot,   6, 1);
-        layout->addWidget(clear, 6, 2);
+        layout->addWidget(zero, 6, 0, 1, 2);
+        layout->addWidget(dot,  6, 2);
     }
 
-    /** @brief Places the Calculate button spanning the full width at the bottom. */
+    /** @brief Places the Calculate button in column 4, in rows 2-6. */
     void buildCalculateButton() {
-        QPushButton *button = makeButton("Calculate");
+        QPushButton *button = makeButton("=");
+        button->setObjectName("primary");
+        button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         connect(button, &QPushButton::clicked, this, [this]() {
             try {
-                QString expr = display->text();
-                expr.replace("²√(", "sqrt(");
-                expr.replace("n!(", "fact(");
-                expr.replace("√(", "root(");
-                double result = evaluate(expr.toStdString());
+                double result = evaluate(prepareExpression(display->text()).toStdString());
                 display->setText(QString::number(result));
+                hasError = false;
             } catch (std::exception &e) {
-                display->setText("Error");
+                display->setText(QString::fromStdString(e.what()));
+                hasError = true;
             }
         });
-        layout->addWidget(button, 7, 0, 1, 4);
+        layout->addWidget(button, 2, 4, 5, 1);
     }
 };
 
