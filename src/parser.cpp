@@ -32,7 +32,6 @@ std::string peekStr() {
     return std::string(1, input[pos]);
 }
 
-
 char consume() {
     skipSpaces();
     return input[pos++];
@@ -98,7 +97,7 @@ double parsePower() {
 
     if (peekStr() == "^" || peekStr() == "ˆ") {
         pos += (peekStr() == "ˆ") ? 2 : 1;
-        double exp = parsePower(); 
+        double exp = parsePower();
         return power(base, (int)exp);
     }
 
@@ -151,7 +150,6 @@ double parsePrimary() {
 
     return parseNumber();
 }
-
 
 double evaluate(const std::string &expr) {
     input = expr;
