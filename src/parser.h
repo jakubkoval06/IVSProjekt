@@ -1,3 +1,17 @@
+//  ==============================
+//  project:    IVS Calculator (parser)
+//  author:     xkovalj00 Jakub Koval
+//  date:       2026
+//  ==============================
+/**
+ * @file parser.h
+ * @brief Header file for the IVS calculator expression parser. Declares the
+ *        recursive-descent parser used to tokenise and evaluate mathematical
+ *        expressions entered by the user.
+ * @author Jakub Koval / xkovalj00
+ * @date 2026
+ */
+
 #ifndef PARSER_H
 #define PARSER_H
 
