@@ -1,8 +1,16 @@
 //  ==============================
-//  project:    IVS Calculator (math_lib)
+//  project:    IVS Calculator (parser)
 //  author:     xkovalj00 Jakub Koval
 //  date:       2026
 //  ==============================
+/**
+ * @file parser.cpp
+ * @brief Implementation file for the IVS calculator expression parser. Implements the
+ *        recursive-descent parser used to tokenise and evaluate mathematical
+ *        expressions entered by the user.
+ * @author Jakub Koval / xkovalj00
+ * @date 2026
+ */
 
 #include "math_lib.h"
 #include "parser.h"
