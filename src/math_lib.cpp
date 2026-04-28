@@ -1,3 +1,16 @@
+//  ==============================
+//  project:    IVS Calculator (math_lib)
+//  author:     xkovalj00 Jakub Koval
+//  date:       2026
+//  ==============================
+/**
+ * @file math_lib.cpp
+ * @brief Implementation file for the IVS calculator math library. Implements arithmetic,
+ *        factorial, power, root, and statistical functions.
+ * @author Jakub Koval / xkovalj00
+ * @date 2026
+ */
+
 #include "math_lib.h"
 #include <cmath>
 #include <iostream>
