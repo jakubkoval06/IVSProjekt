@@ -158,7 +158,16 @@ double parsePrimary() {
             expect(')');
             return factorial(val);
         }
-
+        
+        if (name == "log") {
+            expect('(');
+            double val = parseExpr();
+            expect(',');
+            double base = parseExpr();
+            expect(')');
+            return logarithm(val, base);
+        }
+        
         throw std::runtime_error("Unknown function: " + name);
     }
 
