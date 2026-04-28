@@ -1,3 +1,9 @@
+//  ==============================
+//  project:    IVS Calculator (math_lib)
+//  author:     xkovalj00 Jakub Koval
+//  date:       2026
+//  ==============================
+
 #include "math_lib.h"
 #include "parser.h"
 #include <iostream>
