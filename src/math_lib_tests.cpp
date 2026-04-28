@@ -1,13 +1,11 @@
 //  ==============================
 //  project:    IVS Calculator (Tests)
 //  author:     xkadlep01 Patrik Kadlecek
-//  date:       1.4.2006
+//  date:       2026
 //  ==============================
 
 #include <gtest/gtest.h>
 #include "math_lib.h"
-
-
 
 //========== ADD TESTS ==========
 TEST(Add, BasicCases) {

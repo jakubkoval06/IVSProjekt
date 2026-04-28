@@ -1,3 +1,17 @@
+//  ==============================
+//  project:    IVS Calculator (parser)
+//  author:     xkovalj00 Jakub Koval
+//  date:       2026
+//  ==============================
+/**
+ * @file parser.cpp
+ * @brief Implementation file for the IVS calculator expression parser. Implements the
+ *        recursive-descent parser used to tokenise and evaluate mathematical
+ *        expressions entered by the user.
+ * @author Jakub Koval / xkovalj00
+ * @date 2026
+ */
+
 #include "math_lib.h"
 #include "parser.h"
 #include <iostream>
@@ -31,7 +45,6 @@ std::string peekStr() {
     if ((unsigned char)input[pos] == 0xCB && (unsigned char)input[pos + 1] == 0x86) return "ˆ";
     return std::string(1, input[pos]);
 }
-
 
 char consume() {
     skipSpaces();
@@ -98,7 +111,7 @@ double parsePower() {
 
     if (peekStr() == "^" || peekStr() == "ˆ") {
         pos += (peekStr() == "ˆ") ? 2 : 1;
-        double exp = parsePower(); 
+        double exp = parsePower();
         return power(base, (int)exp);
     }
 
@@ -151,7 +164,6 @@ double parsePrimary() {
 
     return parseNumber();
 }
-
 
 double evaluate(const std::string &expr) {
     input = expr;
