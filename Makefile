@@ -25,7 +25,7 @@ pack: clean doc
 	mkdir -p xkadlep01_xkovalj00_xferenj00/doc
 	mkdir -p xkadlep01_xkovalj00_xferenj00/install
 	mkdir -p xkadlep01_xkovalj00_xferenj00/repo
-	cp -r doc/* xkadlep01_xkovalj00_xferenj00/doc/ 2>/dev/null || true
+	cp -r docs/* xkadlep01_xkovalj00_xferenj00/doc/ 2>/dev/null || true
 	cp IVSCalculator.deb xkadlep01_xkovalj00_xferenj00/install/IVSCalculator.deb
 	cp -r . xkadlep01_xkovalj00_xferenj00/repo/ 2>/dev/null || true
 	zip -r xkadlep01_xkovalj00_xferenj00.zip xkadlep01_xkovalj00_xferenj00/
