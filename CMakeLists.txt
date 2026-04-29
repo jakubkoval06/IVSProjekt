@@ -24,7 +24,7 @@ set_target_properties(calculator PROPERTIES
 # Use CMake's file(GET_RUNTIME_DEPENDENCIES) to collect everything
 install(CODE "
     file(GET_RUNTIME_DEPENDENCIES
-        EXECUTABLES \$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/calculator
+        EXECUTABLES \"${CMAKE_BINARY_DIR}/calculator\"
         RESOLVED_DEPENDENCIES_VAR   resolved
         UNRESOLVED_DEPENDENCIES_VAR unresolved
         PRE_EXCLUDE_REGEXES
