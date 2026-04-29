@@ -10,6 +10,12 @@ add_executable(calculator
     src/parser.cpp
     src/math_lib.cpp
 )
+
+add_executable(stddev
+    src/stddev.cpp
+    src/math_lib.cpp
+)
+
 target_link_libraries(calculator PRIVATE Qt6::Widgets Qt6::Core Qt6::Gui)
 set_target_properties(calculator PROPERTIES
     INSTALL_RPATH "$ORIGIN/../lib/ivscalculator"
@@ -106,6 +112,10 @@ install(CODE "
 install(FILES packaging/calculator.desktop
     DESTINATION ${CMAKE_INSTALL_DATADIR}/applications
     OPTIONAL
+)
+
+install(TARGETS stddev
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
 # ── CPack configuration ───────────────────────────────────────────────────────
