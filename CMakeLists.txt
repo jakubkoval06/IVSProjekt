@@ -121,15 +121,15 @@ install(TARGETS stddev
 # ── CPack configuration ───────────────────────────────────────────────────────
 set(CPACK_PACKAGE_NAME        "IVSCalculator")
 set(CPACK_PACKAGE_VENDOR      "Bear Together Stronk")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "IVS Calculator - Qt6 scientific calculator")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "IVS Calculator - High Testosterone calculator for big bears")
 set(CPACK_PACKAGE_VERSION     ${PROJECT_VERSION})
-set(CPACK_PACKAGE_CONTACT     "xferenj00@stud.fit.vutbr.cz")
+set(CPACK_PACKAGE_CONTACT     "xkadlep01@stud.fit.vutbr.cz")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README  "${CMAKE_SOURCE_DIR}/README.md")
 
 # ── Generator selection ───────────────────────────────────────────────────────
 set(CPACK_GENERATOR "DEB;TGZ")
-set(CPACK_DEBIAN_PACKAGE_MAINTAINER "xferenj00")
+set(CPACK_DEBIAN_PACKAGE_MAINTAINER "xkadlep01")
 set(CPACK_DEBIAN_PACKAGE_DEPENDS  "libc6 (>= 2.17), libstdc++6 (>= 5.2)")
 set(CPACK_DEBIAN_PACKAGE_SECTION  "utils")
 set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA "${CMAKE_SOURCE_DIR}/postinst;${CMAKE_SOURCE_DIR}/postrm")
