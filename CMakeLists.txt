@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.16)
 project(IVSCalculator VERSION 1.0.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
-
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)
 
 # ── Build the calculator executable ──────────────────────────────────────────
@@ -65,6 +64,14 @@ install(FILES ${QT_PLUGINS_DIR}/platforms/libqwayland-generic.so
 install(CODE "
     file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/qt.conf\"
         \"[Paths]\nPlugins=../lib/ivscalculator\n\")
+")
+
+# Wrapper script so 'calculator' works without setting QT_QPA_PLATFORM manually
+install(CODE "
+    file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/calculator.sh\"
+        \"#!/bin/sh\nQT_QPA_PLATFORM=xcb \\\"\$(dirname \\\"\$0\\\")/calculator\\\" \\\"\$@\\\"\n\")
+    file(CHMOD \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/calculator.sh\"
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE)
 ")
 
 install(FILES packaging/calculator.desktop
