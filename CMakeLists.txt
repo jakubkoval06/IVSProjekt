@@ -3,6 +3,8 @@ project(IVSCalculator VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
+set(CMAKE_INSTALL_RPATH "$ORIGIN/../lib/ivscalculator")
+set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)
 
@@ -15,13 +17,20 @@ add_executable(calculator
 
 target_link_libraries(calculator PRIVATE Qt6::Widgets Qt6::Core Qt6::Gui)
 
-# ── Bundle ALL shared library dependencies ────────────────────────────────────
 set_target_properties(calculator PROPERTIES
     INSTALL_RPATH "$ORIGIN/../lib/ivscalculator"
     BUILD_WITH_INSTALL_RPATH TRUE
+    INSTALL_RPATH_USE_LINK_PATH FALSE
 )
 
-# Use CMake's file(GET_RUNTIME_DEPENDENCIES) to collect everything
+# ── Install rules ─────────────────────────────────────────────────────────────
+include(GNUInstallDirs)
+
+install(TARGETS calculator
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)
+
+# Bundle ALL shared library dependencies
 install(CODE "
     file(GET_RUNTIME_DEPENDENCIES
         EXECUTABLES \"${CMAKE_BINARY_DIR}/calculator\"
@@ -43,14 +52,7 @@ install(CODE "
     endforeach()
 ")
 
-# ── Install rules ─────────────────────────────────────────────────────────────
-include(GNUInstallDirs)
-
-install(TARGETS calculator
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
-
-# Also install Qt platform plugin (required for Qt apps to start)
+# Qt platform plugins
 get_target_property(QT6_WIDGETS_LIB Qt6::Widgets LOCATION)
 get_filename_component(QT6_LIB_DIR ${QT6_WIDGETS_LIB} DIRECTORY)
 
@@ -77,7 +79,7 @@ install(FILES packaging/calculator.desktop
 # ── CPack configuration ───────────────────────────────────────────────────────
 set(CPACK_PACKAGE_NAME        "IVSCalculator")
 set(CPACK_PACKAGE_VENDOR      "Bear Together Stronk")
-set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "IVS Calculator – Qt6 scientific calculator")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "IVS Calculator - Qt6 scientific calculator")
 set(CPACK_PACKAGE_VERSION     ${PROJECT_VERSION})
 set(CPACK_PACKAGE_CONTACT     "xferenj00@stud.fit.vutbr.cz")
 set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
