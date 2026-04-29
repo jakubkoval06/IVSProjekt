@@ -1,13 +1,11 @@
 //  ==============================
 //  project:    IVS Calculator (Tests)
 //  author:     xkadlep01 Patrik Kadlecek
-//  date:       1.4.2006
+//  date:       2026
 //  ==============================
 
 #include <gtest/gtest.h>
 #include "math_lib.h"
-
-
 
 //========== ADD TESTS ==========
 TEST(Add, BasicCases) {
@@ -102,7 +100,7 @@ TEST(Root, BasicCases) {
     EXPECT_NEAR(root(8,3),2,1e-9);
     EXPECT_NEAR(root(1,5),1,1e-9);
     EXPECT_NEAR(root(0,5),0,1e-9);
-    EXPECT_NEAR(root(2,2),1.41421356237,1e-9);
+    EXPECT_NEAR(root(2,2),1.4142135623730951,1e-9);
     EXPECT_NEAR(root(2.25,2),1.5,1e-9);
 }
 
@@ -133,6 +131,25 @@ TEST_F(Sum, EdgeCases) {
     EXPECT_DOUBLE_EQ(sum(single, 1), 42);
     EXPECT_DOUBLE_EQ(sum(positives, 0), 0);
 }
+
+//========== LOG TESTS ==========
+// logarithm(double x, double base)
+TEST(Log, BasicCases) {                                                                                                                                                                                         
+      EXPECT_NEAR(logarithm(1, 10), 0, 1e-9);                                                                                                                                                                           
+      EXPECT_NEAR(logarithm(10, 10), 1, 1e-9);                                                                                                                                                                          
+      EXPECT_NEAR(logarithm(100, 10), 2, 1e-9);     
+      EXPECT_NEAR(logarithm(8, 2), 3, 1e-9);                                                                                                                                                                            
+      EXPECT_NEAR(logarithm(0.5, 2), -1, 1e-9);
+}
+
+TEST(Log, EdgeCases) {
+    EXPECT_THROW(logarithm(0,10), std::invalid_argument);
+    EXPECT_THROW(logarithm(-1,10), std::invalid_argument);
+    EXPECT_THROW(logarithm(10, 1), std::invalid_argument);
+    EXPECT_THROW(logarithm(10, 0), std::invalid_argument);                                                                                                                                                            
+    EXPECT_THROW(logarithm(10, -2), std::invalid_argument);
+}
+
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
