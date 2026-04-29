@@ -1,0 +1,3 @@
+#!/bin/sh
+echo "/usr/lib/ivscalculator" > /etc/ld.so.conf.d/ivscalculator.conf
+ldconfig
