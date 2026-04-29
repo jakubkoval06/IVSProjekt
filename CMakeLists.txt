@@ -1,10 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(IVSCalculator VERSION 1.0.0 LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_INSTALL_RPATH "\$ORIGIN/../lib/ivscalculator")
-set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets Core Gui)
 
@@ -14,18 +11,15 @@ add_executable(calculator
     src/parser.cpp
     src/math_lib.cpp
 )
-
 target_link_libraries(calculator PRIVATE Qt6::Widgets Qt6::Core Qt6::Gui)
-
 set_target_properties(calculator PROPERTIES
-    INSTALL_RPATH "\$ORIGIN/../lib/ivscalculator"
+    INSTALL_RPATH "$ORIGIN/../lib/ivscalculator"
     BUILD_WITH_INSTALL_RPATH TRUE
     INSTALL_RPATH_USE_LINK_PATH FALSE
 )
 
 # ── Install rules ─────────────────────────────────────────────────────────────
 include(GNUInstallDirs)
-
 install(TARGETS calculator
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
@@ -44,7 +38,7 @@ install(CODE "
     )
     foreach(dep \${resolved})
         file(INSTALL
-            DESTINATION \"\${CMAKE_INSTALL_PREFIX}/lib/ivscalculator\"
+            DESTINATION \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/lib/ivscalculator\"
             TYPE SHARED_LIBRARY
             FOLLOW_SYMLINK_CHAIN
             FILES \"\${dep}\"
@@ -53,14 +47,16 @@ install(CODE "
 ")
 
 # Qt platform plugins
-get_target_property(QT6_WIDGETS_LIB Qt6::Widgets LOCATION)
-get_filename_component(QT6_LIB_DIR ${QT6_WIDGETS_LIB} DIRECTORY)
-
-install(FILES ${QT6_LIB_DIR}/../plugins/platforms/libqxcb.so
+get_target_property(QT_QMAKE Qt6::qmake IMPORTED_LOCATION)
+execute_process(COMMAND ${QT_QMAKE} -query QT_INSTALL_PLUGINS
+    OUTPUT_VARIABLE QT_PLUGINS_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+install(FILES ${QT_PLUGINS_DIR}/platforms/libqxcb.so
     DESTINATION lib/ivscalculator/platforms
     OPTIONAL
 )
-install(FILES ${QT6_LIB_DIR}/../plugins/platforms/libqwayland-generic.so
+install(FILES ${QT_PLUGINS_DIR}/platforms/libqwayland-generic.so
     DESTINATION lib/ivscalculator/platforms
     OPTIONAL
 )
@@ -86,11 +82,9 @@ set(CPACK_RESOURCE_FILE_LICENSE "${CMAKE_SOURCE_DIR}/LICENSE")
 set(CPACK_RESOURCE_FILE_README  "${CMAKE_SOURCE_DIR}/README.md")
 
 # ── Generator selection ───────────────────────────────────────────────────────
-set(CPACK_GENERATOR "DEB")
+set(CPACK_GENERATOR "DEB;TGZ")
 set(CPACK_DEBIAN_PACKAGE_MAINTAINER "xferenj00")
-set(CPACK_DEBIAN_PACKAGE_DEPENDS  "")
+set(CPACK_DEBIAN_PACKAGE_DEPENDS  "libc6 (>= 2.17), libstdc++6 (>= 5.2)")
 set(CPACK_DEBIAN_PACKAGE_SECTION  "utils")
-
-list(APPEND CPACK_GENERATOR "TGZ")
 
 include(CPack)
