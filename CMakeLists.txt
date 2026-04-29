@@ -23,53 +23,55 @@ install(TARGETS calculator
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Hardcoded all shared library dependencies
-install(FILES
-    /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6
-    /usr/lib/x86_64-linux-gnu/libQt6Core.so.6
-    /usr/lib/x86_64-linux-gnu/libQt6Gui.so.6
-    /usr/lib/x86_64-linux-gnu/libQt6DBus.so.6
-    /usr/lib/x86_64-linux-gnu/libEGL.so.1
-    /usr/lib/x86_64-linux-gnu/libfontconfig.so.1
-    /usr/lib/x86_64-linux-gnu/libX11.so.6
-    /usr/lib/x86_64-linux-gnu/libglib-2.0.so.0
-    /usr/lib/x86_64-linux-gnu/libxkbcommon.so.0
-    /usr/lib/x86_64-linux-gnu/libGLX.so.0
-    /usr/lib/x86_64-linux-gnu/libOpenGL.so.0
-    /usr/lib/x86_64-linux-gnu/libpng16.so.16
-    /usr/lib/x86_64-linux-gnu/libharfbuzz.so.0
-    /usr/lib/x86_64-linux-gnu/libmd4c.so.0
-    /usr/lib/x86_64-linux-gnu/libfreetype.so.6
-    /usr/lib/x86_64-linux-gnu/libz.so.1
-    /usr/lib/x86_64-linux-gnu/libicui18n.so.74
-    /usr/lib/x86_64-linux-gnu/libicuuc.so.74
-    /usr/lib/x86_64-linux-gnu/libicudata.so.74
-    /usr/lib/x86_64-linux-gnu/libdouble-conversion.so.3
-    /usr/lib/x86_64-linux-gnu/libb2.so.1
-    /usr/lib/x86_64-linux-gnu/libpcre2-16.so.0
-    /usr/lib/x86_64-linux-gnu/libpcre2-8.so.0
-    /usr/lib/x86_64-linux-gnu/libzstd.so.1
-    /usr/lib/x86_64-linux-gnu/libGLdispatch.so.0
-    /usr/lib/x86_64-linux-gnu/libexpat.so.1
-    /usr/lib/x86_64-linux-gnu/libxcb.so.1
-    /usr/lib/x86_64-linux-gnu/libdbus-1.so.3
-    /usr/lib/x86_64-linux-gnu/libgraphite2.so.3
-    /usr/lib/x86_64-linux-gnu/libbz2.so.1.0
-    /usr/lib/x86_64-linux-gnu/libbrotlidec.so.1
-    /usr/lib/x86_64-linux-gnu/libbrotlicommon.so.1
-    /usr/lib/x86_64-linux-gnu/libgomp.so.1
-    /usr/lib/x86_64-linux-gnu/libXau.so.6
-    /usr/lib/x86_64-linux-gnu/libXdmcp.so.6
-    /usr/lib/x86_64-linux-gnu/libsystemd.so.0
-    /usr/lib/x86_64-linux-gnu/libbsd.so.0
-    /usr/lib/x86_64-linux-gnu/libcap.so.2
-    /usr/lib/x86_64-linux-gnu/libgcrypt.so.20
-    /usr/lib/x86_64-linux-gnu/liblz4.so.1
-    /usr/lib/x86_64-linux-gnu/liblzma.so.5
-    /usr/lib/x86_64-linux-gnu/libmd.so.0
-    /usr/lib/x86_64-linux-gnu/libgpg-error.so.0
-    DESTINATION lib/ivscalculator
+# Install all shared library dependencies (symlinks + real versioned files)
+foreach(LIB
+    libQt6Widgets.so
+    libQt6Core.so
+    libQt6Gui.so
+    libQt6DBus.so
+    libEGL.so
+    libfontconfig.so
+    libX11.so
+    libglib-2.0.so
+    libxkbcommon.so
+    libGLX.so
+    libOpenGL.so
+    libpng16.so
+    libharfbuzz.so
+    libmd4c.so
+    libfreetype.so
+    libz.so
+    libicui18n.so
+    libicuuc.so
+    libicudata.so
+    libdouble-conversion.so
+    libb2.so
+    libpcre2-16.so
+    libpcre2-8.so
+    libzstd.so
+    libGLdispatch.so
+    libexpat.so
+    libxcb.so
+    libdbus-1.so
+    libgraphite2.so
+    libbz2.so
+    libbrotlidec.so
+    libbrotlicommon.so
+    libgomp.so
+    libXau.so
+    libXdmcp.so
+    libsystemd.so
+    libbsd.so
+    libcap.so
+    libgcrypt.so
+    liblz4.so
+    liblzma.so
+    libmd.so
+    libgpg-error.so
 )
+    file(GLOB LIB_FILES "/usr/lib/x86_64-linux-gnu/${LIB}*")
+    install(FILES ${LIB_FILES} DESTINATION lib/ivscalculator)
+endforeach()
 
 # Qt platform plugins
 get_target_property(QT_QMAKE Qt6::qmake IMPORTED_LOCATION)
@@ -92,7 +94,7 @@ install(CODE "
         \"[Paths]\nPlugins=../lib/ivscalculator\n\")
 ")
 
-# Wrapper script so 'calculator.sh' works without setting QT_QPA_PLATFORM manually
+# Wrapper script
 install(CODE "
     file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/calculator.sh\"
         \"#!/bin/sh\nQT_QPA_PLATFORM=xcb \\\"\$(dirname \\\"\$0\\\")/calculator\\\" \\\"\$@\\\"\n\")
