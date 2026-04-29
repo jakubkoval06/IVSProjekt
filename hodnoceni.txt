@@ -1,4 +1,3 @@
-xlogin01 100 (základ GUI a základní mat. operace)
-xlogin02 100 (pokročilé mat. operace)
-xlogin03 90 (profiling, instalátor)
-xlogin04 110 (testy, dokumentace)
+xkadlep01 100 (profiling,testy,dokumentacia, code review,skutecnost)
+xkovalj00 100 (math_lib,parser,makefile,installer, debugging)
+xferenj00 100 (GUI, mockup, screenshot)
