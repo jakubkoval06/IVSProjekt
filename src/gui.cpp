@@ -33,8 +33,7 @@ public:
     /** @brief Constructs the calculator window and initialises all widgets. */
     CalculatorWindow() : QMainWindow(nullptr) {
         setWindowTitle("Calculator");
-        //set the window title and fixed size to not loose sanity later
-        setFixedSize(460, 500);
+        setMinimumSize(460, 500);
 
         QWidget *central = new QWidget(this);
         setCentralWidget(central);
@@ -101,9 +100,11 @@ public:
 
         // Equal column widths so calculate doesn't eat half the window
         for (int col = 0; col < 5; ++col) layout->setColumnStretch(col, 1);
+        for (int row = 0; row < 7; ++row) layout->setRowStretch(row, 1);
 
         buildDisplay();
         buildFunctionRow();
+        buildLogButton();
         buildParenthesesAndClearRow();
         buildDigitButtons();
         buildOperatorButtons();
@@ -126,6 +127,7 @@ private:
         QPushButton *btn = new QPushButton(text, this);
         btn->setMinimumHeight(50);
         btn->setFocusPolicy(Qt::NoFocus);
+        btn->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         return btn;
     }
 
@@ -156,6 +158,9 @@ private:
                 if (!display->text().isEmpty())
                     display->setText(display->text().chopped(1));
                 break;
+            case Qt::Key_L:
+                appendToDisplay("log");
+                break;
             case Qt::Key_Escape:
             case Qt::Key_C:
                 display->clear();
@@ -172,6 +177,7 @@ private:
         display->setFocusPolicy(Qt::NoFocus);
         display->setAlignment(Qt::AlignRight);
         display->setMinimumHeight(40);
+        display->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         layout->addWidget(display, 0, 0, 1, 5);
     }
 
@@ -188,12 +194,14 @@ private:
                 "FUNCTIONS\n"
                 "  ²√(x)         square root       (e.g. ²√(9))\n"
                 "  n√(x)         nth root of x     (e.g. 3√(27) = cube root of 27)\n"
-                "  fact(x)        factorial         (e.g. fact(5))\n"
+                "  fact(x)       factorial         (e.g. fact(5))\n"
+                "  log<base>(x)  logarithm of x w base x (e.g. log2(5))"
                 "\n"
                 "KEYBOARD\n"
                 "  Enter         calculate\n"
                 "  Backspace     delete last character\n"
-                "  Escape        clear"
+                "  Escape        clear\n"
+                "  L             insert log\n"
             );
         });
         layout->addWidget(helpBtn, 6, 3);
@@ -371,7 +379,15 @@ private:
         layout->addWidget(dot,  6, 2);
     }
 
-    /** @brief Places the Calculate button in column 4, in rows 2-6. */
+    /** @brief Places log<base>(x) button. */
+    void buildLogButton() {
+        QPushButton *logBtn = makeButton("log");
+        logBtn->setObjectName("op");
+        connect(logBtn, &QPushButton::clicked, this, [this]() { appendToDisplay("log"); });
+        layout->addWidget(logBtn, 2, 4);
+    }
+
+    /** @brief Places the Calculate button in column 4, in rows 3-6. */
     void buildCalculateButton() {
         QPushButton *button = makeButton("=");
         button->setObjectName("primary");
@@ -386,7 +402,7 @@ private:
                 hasError = true;
             }
         });
-        layout->addWidget(button, 2, 4, 5, 1);
+        layout->addWidget(button, 3, 4, 4, 1);
     }
 };
 
