@@ -68,6 +68,7 @@ foreach(LIB
     liblzma.so
     libmd.so
     libgpg-error.so
+    libQt6XcbQpa.so
 )
     file(GLOB LIB_FILES "/usr/lib/x86_64-linux-gnu/${LIB}*")
     install(FILES ${LIB_FILES} DESTINATION lib/ivscalculator)
