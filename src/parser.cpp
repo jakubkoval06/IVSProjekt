@@ -160,12 +160,11 @@ double parsePrimary() {
         }
         
         if (name == "log") {
+            double logBase = parseNumber();
             expect('(');
             double val = parseExpr();
-            expect(',');
-            double base = parseExpr();
             expect(')');
-            return logarithm(val, base);
+            return logarithm(val, logBase);
         }
         
         throw std::runtime_error("Unknown function: " + name);
