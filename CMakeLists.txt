@@ -28,8 +28,8 @@ install(CODE "
         RESOLVED_DEPENDENCIES_VAR   resolved
         UNRESOLVED_DEPENDENCIES_VAR unresolved
         PRE_EXCLUDE_REGEXES
-            \"^libpthread\" \"^libc\\.\" \"^libm\\.\" \"^libdl\\.\"
-            \"^librt\\.\"  \"^ld-linux\"
+            \"^libpthread\" \"^libc[.]\" \"^libm[.]\" \"^libdl[.]\"
+            \"^librt[.]\"  \"^ld-linux\"
         POST_EXCLUDE_REGEXES
             \"/lib/x86_64-linux-gnu/libc\"
     )
