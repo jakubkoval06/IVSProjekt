@@ -23,27 +23,13 @@ install(TARGETS calculator
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-# Bundle ALL shared library dependencies
-install(CODE "
-    file(GET_RUNTIME_DEPENDENCIES
-        EXECUTABLES \"${CMAKE_BINARY_DIR}/calculator\"
-        RESOLVED_DEPENDENCIES_VAR   resolved
-        UNRESOLVED_DEPENDENCIES_VAR unresolved
-        PRE_EXCLUDE_REGEXES
-            \"^libpthread\" \"^libc[.]\" \"^libm[.]\" \"^libdl[.]\"
-            \"^librt[.]\"  \"^ld-linux\"
-        POST_EXCLUDE_REGEXES
-            \"/lib/x86_64-linux-gnu/libc\"
-    )
-    foreach(dep \${resolved})
-        file(INSTALL
-            DESTINATION \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/lib/ivscalculator\"
-            TYPE SHARED_LIBRARY
-            FOLLOW_SYMLINK_CHAIN
-            FILES \"\${dep}\"
-        )
-    endforeach()
-")
+# Hardcoded Qt6 libraries
+install(FILES
+    /usr/lib/x86_64-linux-gnu/libQt6Widgets.so.6
+    /usr/lib/x86_64-linux-gnu/libQt6Core.so.6
+    /usr/lib/x86_64-linux-gnu/libQt6Gui.so.6
+    DESTINATION lib/ivscalculator
+)
 
 # Qt platform plugins
 get_target_property(QT_QMAKE Qt6::qmake IMPORTED_LOCATION)
@@ -66,7 +52,7 @@ install(CODE "
         \"[Paths]\nPlugins=../lib/ivscalculator\n\")
 ")
 
-# Wrapper script so 'calculator' works without setting QT_QPA_PLATFORM manually
+# Wrapper script so 'calculator.sh' works without setting QT_QPA_PLATFORM manually
 install(CODE "
     file(WRITE \"\$ENV{DESTDIR}\${CMAKE_INSTALL_PREFIX}/bin/calculator.sh\"
         \"#!/bin/sh\nQT_QPA_PLATFORM=xcb \\\"\$(dirname \\\"\$0\\\")/calculator\\\" \\\"\$@\\\"\n\")
