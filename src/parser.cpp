@@ -53,7 +53,7 @@ char consume() {
 
 void expect(char c) {
     if (consume() != c)
-        throw std::runtime_error(std::string("Expected '") + c + "'");
+        throw std::runtime_error("Chyba: neplatný výraz");
 }
 
 double parseNumber() {
@@ -67,7 +67,7 @@ double parseNumber() {
         pos++;
 
     if (pos == start)
-        throw std::runtime_error("Expected a number");
+        throw std::runtime_error("Chyba: neplatný výraz");
 
     return std::stod(input.substr(start, pos - start));
 }
@@ -99,8 +99,13 @@ double parseTerm() {
     while (peek() == '*' || peek() == '/') {
         char op = consume();
         double right = parsePower();
-        if (op == '*') left = multiply(left, right);
-        else           left = divide(left, right);
+        if (op == '*') {
+            left = multiply(left, right);
+        } else {
+            if (right == 0.0)
+                throw std::runtime_error("Chyba: delenie nulou");
+            left = divide(left, right);
+        }
     }
 
     return left;
@@ -140,6 +145,8 @@ double parsePrimary() {
             expect('(');
             double val = parseExpr();
             expect(')');
+            if (val < 0)
+                throw std::runtime_error("Chyba: záporný argument odmocniny");
             return root(val, 2);
         }
 
@@ -149,17 +156,35 @@ double parsePrimary() {
             expect(',');
             int n = (int)parseNumber();
             expect(')');
+            if (val < 0)
+                throw std::runtime_error("Chyba: záporný argument odmocniny");
             return root(val, n);
         }
 
         if (name == "fact") {
             expect('(');
-            int val = (int)parseExpr();
+            double val = parseExpr();
             expect(')');
-            return factorial(val);
+            if (val < 0)
+                throw std::runtime_error("Chyba: faktoriál zo záporného čísla");
+            if (val != (int)val)
+                throw std::runtime_error("Chyba: faktoriál nie je celé číslo");
+            return factorial((int)val);
         }
 
-        throw std::runtime_error("Unknown function: " + name);
+        if (name == "log") {
+            double logBase = parseNumber();
+            expect('(');
+            double val = parseExpr();
+            expect(')');
+            if (logBase <= 0 || logBase == 1)
+                throw std::runtime_error("Chyba: neplatný základ logaritmu");
+            if (val <= 0)
+                throw std::runtime_error("Chyba: záporný argument logaritmu");
+            return logarithm(val, logBase);
+        }
+
+        throw std::runtime_error("Chyba: neplatný výraz");
     }
 
     return parseNumber();
@@ -168,5 +193,9 @@ double parsePrimary() {
 double evaluate(const std::string &expr) {
     input = expr;
     pos   = 0;
-    return parseExpr();
+    double result = parseExpr();
+    skipSpaces();
+    if (pos != (int)input.size())
+        throw std::runtime_error("Chyba: neplatný výraz");
+    return result;
 }

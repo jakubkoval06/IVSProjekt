@@ -1,1 +1,37 @@
-tento soubor bude obsahovat rozdil mezi planem projektu a skutecnosti
+IVS Projekt 2 - Porovnanie plánu a skutočnosti
+===============================================
+
+1. SPLNENÉ PODĽA PLÁNU (Pred deadlinom)
+
+- Makefile, Hlavičkové súbory, Testy matematickej knižnice, Matematická knižnica, Profilovanie,
+  Spracovanie vstupu (parsing), Debugging screenshot.
+- Doxygen dokumentácia: termín nebol určený, ale bola dokončená načas; na dokumentácii si každý
+  zdokumentoval vlastnú časť projektu.
+
+2. ODCHÝLKY OD PLÁNU
+
+- Inštalátor/odinštalátor: plánovaný termín bol 22. apríla 2026,
+  dokončenie sa oneskorilo z dôvodu neskoršieho dokončenia GUI
+  a ďalších komponentov, na ktorých inštalátor závisí.
+- Pri matematickej knižnici sme na začiatku zle pochopili špecifikáciu a
+  museli sme neskôr doimplementovať chýbajúce funkcie.
+- Tým, že sme začali pracovať na inštalátore, sme mali menej času na používateľský manuál.
+
+3. AKO SME PRACOVALI
+
+- Komunikácia tímu: prebehala primárne cez Discord podľa plánu;
+  Trello bolo používané na sledovanie úloh.
+
+- Verziovanie: Git s hostingom na GitHub. Pri úvodnom nastavení sme všetko pushovali priamo do
+  mainu, ale keď sme začali implementovať jednotlivé funkcie, každý si vytvoril vlastnú vetvu,
+  naimplementoval funkciu a následne ju mergoval do mainu pomocou Pull Requestu. Neskôr sme
+  začali používať squash namiesto merge. Pri dokumentácii sme vytvorili vetvu doxygen-setup
+  a každý mal vlastnú vetvu odvodenú od nej; po dokončení sme finálnu vetvu zlúčili do mainu.
+  Rovnako sme postupovali aj pri finálnych úpravách s vetvou dev.
+
+4. ZÁVER
+
+- V skratke projekt prebiehal celkom v poriadku. Problém nastal neskôr, keď sme si neskoršie časti
+  projektu nechali až na koniec. Museli sme čakať, kým sa implementuje jedna funkcia, aby sme sa
+  vedeli pohnúť ďalej. Najväčší problém nastal pri inštalátore, ktorý závisel od dokončenia GUI
+  a ďalších komponentov, čo spôsobilo jeho oneskorenie.

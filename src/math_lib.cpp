@@ -70,3 +70,12 @@ double sum(double *val, int len) {
     }
     return temp;
 }
+double logarithm(double x, double base) {
+    if (x <= 0) {
+        throw std::invalid_argument("Logarithm argument must be positive");
+    }
+    if (base <= 0 || base == 1) {
+        throw std::invalid_argument("Logarithm base must be positive and not equal to 1");
+    }
+    return log(x) / log(base);
+}

@@ -88,5 +88,16 @@ double root(double base, int n);
  * @return Sum of all elements in @p val.
  */
 double sum(double *val, int len);
-
+/**
+ * @brief Computes the logarithm of a value in a given base.
+ *
+ * Calculates log_base(x) using the change-of-base formula: ln(x) / ln(base).
+ *
+ * @param x    The argument of the logarithm. Must be a positive number.
+ * @param base The base of the logarithm. Must be a positive number other than 1.
+ * @return Logarithm of @p x in the given @p base.
+ * @throws std::invalid_argument if @p x is zero or negative.
+ * @throws std::invalid_argument if @p base is zero, negative, or equal to 1.
+ */
+double logarithm(double x, double base);
 #endif
